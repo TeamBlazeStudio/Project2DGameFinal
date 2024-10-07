@@ -1,5 +1,7 @@
 #include "Server.h"
 
+bool ReceivePacket(ENetHost* server, char* data);
+
 Server::Server() {}
 
 Server::~Server() {
@@ -37,15 +39,18 @@ void Server::run() {
 		while (enet_host_service(server, &event, 1000) > 0) {
 			switch (event.type) {
 			case ENET_EVENT_TYPE_CONNECT:
-				printf("A new client connected from %x:%u.\n", 
+				printf("Server: A new client connected from %x:%u.\n", 
 					event.peer->address.host, event.peer->address.port);
+				
 				break;
 			case ENET_EVENT_TYPE_RECEIVE:
-				std::cout << "Packet received from client.\n";
+				std::cout << "Server: Packet received from client.\n";
+				if (!ReceivePacket(server, (char*)event.packet->data)) std::cerr << "Server: Error packet parsing" << std::endl;
 				enet_packet_destroy(event.packet);
 				break;
+
 			case ENET_EVENT_TYPE_DISCONNECT:
-				printf("%x:%u disconnected.\n",
+				printf("Server: %x:%u disconnected.\n",
 					event.peer->address.host, event.peer->address.port);
 				break;
 			default:
@@ -55,4 +60,20 @@ void Server::run() {
 	}
 	Server::~Server();
 	return;
+}
+
+bool ReceivePacket( ENetHost* server, char* data) {
+	std::cout << "Server: packet sended by client: " << data << std::endl;
+
+	int data_type;
+	if (!sscanf(data, "%d|", &data_type)) return false;
+	
+	switch (data_type) {
+		case 1:
+			//need to be add a parse for make an unique id for the player
+			//and store it in a vector users
+			break;
+	}
+
+	return true;
 }

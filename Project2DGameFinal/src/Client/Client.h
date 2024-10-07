@@ -15,5 +15,7 @@ public:
 
 	bool init();
 	void run();
+
+	void SendPacket(const std::string& data);
 };
 

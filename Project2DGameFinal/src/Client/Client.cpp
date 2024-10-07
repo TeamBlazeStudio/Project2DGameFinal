@@ -42,13 +42,31 @@ bool Client::init() {
 
 void Client::run() {
 	system("cls");
-	std::cout << "client running...";
-	while (enet_host_service(client, &evnt, 1000) > 0) {
-		switch (evnt.type) {
-			case ENET_EVENT_TYPE_RECEIVE:
-				std::cout << "Packet received from server.\n";
-				break;
+	std::cout << "client running..." << std::endl;
+	std::cout << "Client Connected to server: " << address.host << ":" << address.port << std::endl;
+
+	std::string name = "RedBlaze908";
+	std::string msg = "1|";
+	msg += name;
+
+	while (true) {
+
+		while (enet_host_service(client, &evnt, 1000) > 0) {
+			if (evnt.type == ENET_EVENT_TYPE_RECEIVE) {
+				std::cout << "Client: Packet received" << std::endl;
+				enet_packet_destroy(evnt.packet);
+			}
+			else if (evnt.type == ENET_EVENT_TYPE_DISCONNECT) {
+				std::cout << "Client: Disconnected" << std::endl;
+			}
 		}
+
+		if (msg != "") {
+			SendPacket(msg);
+			//SendPacket(msg);
+			msg = "";
+		}
+
 	}
 
 	enet_peer_disconnect(peer, 0);
@@ -58,10 +76,21 @@ void Client::run() {
 				enet_packet_destroy(evnt.packet);
 				break;
 			case ENET_EVENT_TYPE_DISCONNECT:
-				puts("Disconnection succeded.");
+				puts("Client: Disconnection succeded.");
 				break;
 		}
 	}
 
 	return;
+}
+
+void Client::SendPacket(const std::string& data) {
+	//Make a packet
+	ENetPacket* packet = enet_packet_create(data.c_str(), data.size() + 1, ENET_PACKET_FLAG_RELIABLE);
+	
+	//Send the packet
+	enet_peer_send(peer, 0, packet);
+
+	//Check if the packet is been send correctly
+	enet_host_flush(client);
 }

@@ -81,12 +81,19 @@ int main(int argc, char** argv) {
                         //Need to be add a new menu for choose if the user
                         //want to join a server or if he want to host a server
                         server = new Server;
+                        client = new Client;
                         if (server->init()) {
                             std::thread serverThread(ServerThread, server);
                             serverThread.detach();
+
+                            if (client->init()) {
+                                std::thread clientThread(ClientThread, client);
+                                clientThread.detach();
+                            }
                         }
                         else {
                             std::cerr << "Server not initialized, try again" << std::endl;
+                            std::cerr << "Client not initialized, try again" << std::endl;
                         }
                         break;
                     }
