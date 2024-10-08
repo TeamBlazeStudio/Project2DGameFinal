@@ -87,7 +87,9 @@ bool Server::ReceivePacket( ENetHost* server, char* data) {
 
 			//push the id in to the user vector
 			users.push_back(RIds);
-			SendPacket(RIds);
+			std::string temp = "2|";
+			temp += RIds;
+			SendPacket(temp);
 
 			break;
 	}
