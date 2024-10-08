@@ -18,5 +18,7 @@ public:
 	bool init();
 	void run();
 
+	bool ReceivePacket(ENetHost* server, char* data);
+	void SendPacket(const std::string& data);
 };
 

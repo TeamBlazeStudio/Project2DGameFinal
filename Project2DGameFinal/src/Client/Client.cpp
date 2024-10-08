@@ -45,26 +45,28 @@ void Client::run() {
 	std::cout << "client running..." << std::endl;
 	std::cout << "Client Connected to server: " << address.host << ":" << address.port << std::endl;
 
-	std::string name = "RedBlaze908";
+	std::string name = "";
+	std::cout << "Client Enter Username: ";
+	std::cin >> name;
+	
+	// work in progress
+	if (name == "") { std::cerr << "Invalid Name"; return; }
+
 	std::string msg = "1|";
 	msg += name;
+	SendPacket(msg);
 
 	while (true) {
 
 		while (enet_host_service(client, &evnt, 1000) > 0) {
 			if (evnt.type == ENET_EVENT_TYPE_RECEIVE) {
-				std::cout << "Client: Packet received" << std::endl;
+				std::cout << "Client: Packet received: " << evnt.packet->data  << std::endl;
+				ID = (int)evnt.packet->data;
 				enet_packet_destroy(evnt.packet);
 			}
 			else if (evnt.type == ENET_EVENT_TYPE_DISCONNECT) {
 				std::cout << "Client: Disconnected" << std::endl;
 			}
-		}
-
-		if (msg != "") {
-			SendPacket(msg);
-			//SendPacket(msg);
-			msg = "";
 		}
 
 	}

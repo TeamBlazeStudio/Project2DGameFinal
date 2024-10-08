@@ -9,6 +9,8 @@ class Client {
 	ENetEvent evnt;
 	ENetPeer* peer;
 
+	int ID;
+
 public:
 	Client();
 	~Client();

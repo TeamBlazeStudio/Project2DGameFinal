@@ -1,7 +1,5 @@
 #include "Server.h"
 
-bool ReceivePacket(ENetHost* server, char* data);
-
 Server::Server() {}
 
 Server::~Server() {
@@ -62,16 +60,35 @@ void Server::run() {
 	return;
 }
 
-bool ReceivePacket( ENetHost* server, char* data) {
+void Server::SendPacket(const std::string& data) {
+	//Make a packet
+	ENetPacket* packet = enet_packet_create(data.c_str(), data.size() + 1, ENET_PACKET_FLAG_RELIABLE);
+
+	//Send the packet
+	enet_peer_send(event.peer, 0, packet);
+
+	//Check if the packet is been send correctly
+	enet_host_flush(server);
+}
+
+bool Server::ReceivePacket( ENetHost* server, char* data) {
 	std::cout << "Server: packet sended by client: " << data << std::endl;
+	srand(time(NULL));
 
 	int data_type;
 	if (!sscanf(data, "%d|", &data_type)) return false;
 	
 	switch (data_type) {
+		//1 -> Username player
 		case 1:
-			//need to be add a parse for make an unique id for the player
-			//and store it in a vector users
+			//generate a random ID of 6 digits
+			int RId = 100000 + (rand() % 900000);
+			std::string RIds = std::to_string(RId);
+
+			//push the id in to the user vector
+			users.push_back(RIds);
+			SendPacket(RIds);
+
 			break;
 	}
 
