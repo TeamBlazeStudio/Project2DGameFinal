@@ -18,6 +18,7 @@
 #include "Map/Map.h"
 #include "Camera/camera.h"
 #include "MainMenu/MainMenu.h"
+#include "MainMenu/SingleplayerMenu/SingleplayerMenu.h"
 
 
 // ##### Multiplayer #####
