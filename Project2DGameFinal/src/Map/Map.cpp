@@ -2,39 +2,49 @@
 #include <iostream>
 
 
-Map::Map() : mapSize(4), tileMap(mapSize, std::vector<sf::RectangleShape>(mapSize)) {
+Map::Map(sf::Vector2u windowSize) {
     std::srand(static_cast<unsigned>(std::time(nullptr)));
+
+    unsigned int windowWidth = windowSize.x;
+    unsigned int windowHeight = windowSize.y;
+
+    int chunkPixelWidth = 400;
+    int chunkPixelHeight = 400;
+
+    int numChunksX = (windowWidth + chunkPixelWidth - 1) / chunkPixelWidth;
+    int numChunksY = (windowHeight + chunkPixelHeight - 1) / chunkPixelHeight;
+
+    RenderDistanceX = numChunksX;
+    RenderDistanceY = numChunksY;
+
+    tileMap = std::vector<std::vector<chunk*>>(RenderDistanceX, std::vector<chunk*>(RenderDistanceY, nullptr));
 }
 
 void Map::init(float gridSizeF) {
     this->gridSizeF = gridSizeF;
 
-    grass.loadFromFile("assets/block/grass_block.png");
-    sand.loadFromFile("assets/block/sand.png");
-    int counter = 0;
+    for (int i = 0; i < RenderDistanceX; ++i) {
+        for (int j = 0; j < RenderDistanceY; ++j) {
+            tileMap[i][j] = new chunk(i, j);
 
-    for (int x = 0; x < mapSize; ++x) {
-        for (int y = 0; y < mapSize; ++y) {
-            ++counter;
+            float globalPosX = i * 400;
+            float globalPosY = j * 400;
 
-            tileMap[x][y].setSize(sf::Vector2f(gridSizeF, gridSizeF));
-            tileMap[x][y].setTexture(&grass);
-
-            tileMap[x][y].setPosition(x * gridSizeF, y * gridSizeF);
-
+            for (int k = 0; k < 4; ++k) {
+                for (int l = 0; l < 4; ++l) {
+                    tileMap[i][j]->tiles[k][l].setPosition(globalPosX + k * 100, globalPosY + l * 100);
+                }
+            }
         }
     }
-
-    int ran = rand() % 4;
-    int ran2 = rand() % 4;
-    tileMap[ran][ran2].setTexture(&sand);
 
 }
 
 void Map::draw(sf::RenderWindow& window) {
-    for (int x = 0; x < mapSize; ++x) {
-        for (int y = 0; y < mapSize; ++y) {
-            window.draw(tileMap[x][y]);
+    for (int x = 0; x < RenderDistanceX; ++x) {
+        for (int y = 0; y < RenderDistanceY; ++y) {
+            tileMap[x][y]->draw(window);
+
         }
     }
 }

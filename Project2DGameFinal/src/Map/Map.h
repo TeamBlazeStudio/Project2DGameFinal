@@ -4,21 +4,19 @@
 #include <vector>
 #include <iostream>
 #include <utility>
+#include "Chunk/chunk.h"
 
 class Map {
-    const int mapSize = 100;
-    std::vector<std::vector<sf::RectangleShape>> tileMap;
+    int RenderDistanceX;
+    int RenderDistanceY;
 
-    sf::Texture grass, sand;
+    std::vector<std::vector<chunk*>> tileMap;
 
     int lastX{}, lastY{};
     float gridSizeF;
-    //int chunkSize{};
-
-    //int chunkCounter{};
 
 public:
-    Map();
+    Map(sf::Vector2u windowSize);
     ~Map();
 
     void init(float gridSizeF);
@@ -27,9 +25,7 @@ public:
     //void loadChunk();
     //void saveChunk();
 
-    int getSize() { return mapSize; }
-    sf::RectangleShape draw(int x, int y) { return tileMap[x][y]; }
-
+    //int getSize() { return RenderDistance; }
     void draw(sf::RenderWindow& window);
 
 };

@@ -194,16 +194,16 @@ int main(int argc, char** argv) {
         }
         
         //Singleplayer
-        if (mainMenu.getSingleplayer()) {
+        else if (mainMenu.getSingleplayer()) {
 
             if (generateSinglePlayer) {
                 //player
-                player = new Player(&plTexture, sf::Vector2u(5, 6), 0.3f, 800, 500);
+                player = new Player(&plTexture, sf::Vector2u(5, 6), 0.3f, 1000, 600);
 
                 visual = new Camera(*game, player->getPosition().x, player->getPosition().y);
 
                 //Map
-                gameMap = new Map;
+                gameMap = new Map(game->window.getSize());
                 gameMap->init(100.f);
 
                 generateSinglePlayer = false;
@@ -238,6 +238,7 @@ int main(int argc, char** argv) {
 
             //add code here for UI...
         }
+
 
         //Render Window
         game->render();
