@@ -25,6 +25,7 @@ void Map::init(float gridSizeF, sf::Vector2f plPos) {
     int playerChunkX = static_cast<int>(plPos.x / 400);
     int playerChunkY = static_cast<int>(plPos.y / 400);
 
+    //player chunk positon
     std::cout << playerChunkX << " - " << playerChunkY << std::endl;
 
     for (int i = 0; i < RenderDistanceX; ++i) {
