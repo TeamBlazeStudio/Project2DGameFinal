@@ -19,7 +19,7 @@ public:
     Map(sf::Vector2u windowSize);
     ~Map();
 
-    void init(float gridSizeF);
+    void init(float gridSizeF, sf::Vector2f plPos);
 
     //void unloadChunk();
     //void loadChunk();

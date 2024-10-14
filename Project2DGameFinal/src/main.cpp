@@ -204,7 +204,7 @@ int main(int argc, char** argv) {
 
                 //Map
                 gameMap = new Map(game->window.getSize());
-                gameMap->init(100.f);
+                gameMap->init(100.f, player->getPosition());
 
                 generateSinglePlayer = false;
             }

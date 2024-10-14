@@ -20,8 +20,12 @@ Map::Map(sf::Vector2u windowSize) {
     tileMap = std::vector<std::vector<chunk*>>(RenderDistanceX, std::vector<chunk*>(RenderDistanceY, nullptr));
 }
 
-void Map::init(float gridSizeF) {
+void Map::init(float gridSizeF, sf::Vector2f plPos) {
     this->gridSizeF = gridSizeF;
+    int playerChunkX = static_cast<int>(plPos.x / 400);
+    int playerChunkY = static_cast<int>(plPos.y / 400);
+
+    std::cout << playerChunkX << " - " << playerChunkY << std::endl;
 
     for (int i = 0; i < RenderDistanceX; ++i) {
         for (int j = 0; j < RenderDistanceY; ++j) {
