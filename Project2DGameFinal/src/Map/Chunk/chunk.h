@@ -31,5 +31,7 @@ public:
 
 	void draw(sf::RenderWindow& window);
 	sf::Texture& textureCase(int i);
+	int getPosX() { return x; }
+	int getPosY() { return y; }
 };
 

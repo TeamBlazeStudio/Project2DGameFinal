@@ -25,7 +25,7 @@ chunk::chunk() {}
 chunk::~chunk() {}
 
 void chunk::saveToFile(const std::string& folderPath) const {
-	std::string fileName = folderPath + "/c" + std::to_string(x) + "-" + std::to_string(y) + ".txt";
+	std::string fileName = folderPath + "/c" + std::to_string(x) + "_" + std::to_string(y) + ".txt";
 	std::ofstream file(fileName);
     if (file.is_open()) {
         for (int i = 0; i < CHUNK_SIZE; ++i) {
@@ -41,7 +41,7 @@ void chunk::saveToFile(const std::string& folderPath) const {
 }
 
 void chunk::loadFromFile() {
-    std::string fileName = forlderPath + "/c" + std::to_string(x) + "-" + std::to_string(y) + ".txt";
+    std::string fileName = forlderPath + "/c" + std::to_string(x) + "_" + std::to_string(y) + ".txt";
     std::ifstream file(fileName);
     if (file.is_open()) {
         std::string line;
@@ -60,7 +60,6 @@ void chunk::loadFromFile() {
     else std::cerr << "error: folderpath not found or file not found" << std::endl;
     file.close();
 }
-
 
 void chunk::unloadChunk() {
     
