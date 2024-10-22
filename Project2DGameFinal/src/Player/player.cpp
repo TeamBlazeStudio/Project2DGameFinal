@@ -21,6 +21,7 @@ void Player::Update(float deltaTime) {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) movement.x -= speed * deltaTime;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) movement.x += speed * deltaTime;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) { movement.y -= speed * deltaTime; row = 2; }
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) { movement.y += speed * deltaTime; row = 2; }
 
 	if (movement.x == 0.0f && movement.y == 0.0f) row = 0;
 	else if (movement.x != 0.0f) {

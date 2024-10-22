@@ -33,9 +33,6 @@ void Map::init(float gridSizeF, sf::Vector2f plPos) {
     lastX = playerChunkX;
     lastY = playerChunkY;
 
-    //player chunk positon
-    //std::cout << playerChunkX << " - " << playerChunkY << std::endl;
-    
     halfRenderX = RenderDistanceX / 2;
     halfRenderY = RenderDistanceY / 2;
 
@@ -69,11 +66,14 @@ void Map::init(float gridSizeF, sf::Vector2f plPos) {
 
 void Map::checkChunks(sf::Vector2f plPos) {
     int playerChunkX = static_cast<int>(plPos.x / 400);
-    int playerChunkY = static_cast<int>(plPos.y / 400);
-    //std::cout << playerChunkX << " - " << playerChunkY << std::endl;
+    int playerChunkY = static_cast<int>(std::floor(plPos.y / 400));
+    const float activationDistance = 200.0f;
+    std::cout << playerChunkX << " - " << playerChunkY << std::endl;
+
 
     //right
     if (lastX < playerChunkX) {
+
         //std::cout << playerChunkX << " - 0" << std::endl;
 
         if (0 < tileMap.size()) {
@@ -111,50 +111,81 @@ void Map::checkChunks(sf::Vector2f plPos) {
     }
     //left
     else if (lastX > playerChunkX) {
-        //std::cout << playerChunkX << " - 0" << std::endl;
-
         int deleteChunkX = tileMap.size() - 1;
 
-        if (deleteChunkX < tileMap.size()) {
+        if (deleteChunkX >= 0) {
             for (int i = 0; i < RenderDistanceY; ++i) {
                 if (tileMap[deleteChunkX][i] != nullptr) {
                     tileMap[deleteChunkX][i]->unloadChunk();
                     delete tileMap[deleteChunkX][i];
                     tileMap[deleteChunkX][i] = nullptr;
-                    //std::cout << "deleted " << "0 : " << i << std::endl;
                 }
             }
 
             tileMap.erase(tileMap.begin() + deleteChunkX);
-            //std::cout << "Erased chunk at index: " << deleteChunkX << std::endl;
-            tileMap.insert(tileMap.begin(), std::vector<chunk*>(RenderDistanceY, nullptr));
+        }
 
+        tileMap.insert(tileMap.begin(), std::vector<chunk*>(RenderDistanceY, nullptr));
 
-            for (int i = 0; i < RenderDistanceY; ++i) {
-                int chunkX = playerChunkX - 2;
-                int chunkY = playerChunkY - (i - halfRenderY);
+        for (int i = 0; i < RenderDistanceY; ++i) {
+            int chunkX = playerChunkX - 2;
+            int chunkY = playerChunkY + (i - halfRenderY);
+
+            float globalPosX = chunkX * 400;
+            float globalPosY = chunkY * 400;
+
+            tileMap.front()[i] = new chunk(chunkX, chunkY);
+
+            for (int k = 0; k < 4; ++k) {
+                for (int l = 0; l < 4; ++l) {
+                    tileMap.front()[i]->tiles[k][l].setPosition(globalPosX + k * 100, globalPosY + l * 100);
+                }
+            }
+        }
+    }
+    //up
+    else if (lastY > playerChunkY) {
+        int deleteChunkY = tileMap[0].size() - 1;
+        //std::cout << deleteChunkY << "-" << RenderDistanceY << std::endl;
+
+        if (deleteChunkY >= 0) {
+            for (int i = 0; i < RenderDistanceX; ++i) {
+                if (tileMap[i][deleteChunkY] != nullptr) {
+                    tileMap[i][deleteChunkY]->unloadChunk();
+                    delete tileMap[i][deleteChunkY];
+                    tileMap[i][deleteChunkY] = nullptr;
+                }
+            }
+
+            for (int i = 0; i < RenderDistanceX; ++i) {
+                tileMap[i].erase(tileMap[i].begin() + deleteChunkY);
+            }
+
+            for (int i = 0; i < RenderDistanceX; ++i) tileMap[i].insert(tileMap[i].begin(), nullptr);
+
+            for (int i = 0; i < RenderDistanceX; ++i) {
+                int chunkX = playerChunkX + (i - halfRenderX);
+                int chunkY = playerChunkY - 1;
 
                 float globalPosX = chunkX * 400;
                 float globalPosY = chunkY * 400;
 
-                tileMap[0][i] = new chunk(chunkX, chunkY);
+                tileMap[i][0] = new chunk(chunkX, chunkY);
 
                 for (int k = 0; k < 4; ++k) {
                     for (int l = 0; l < 4; ++l) {
-                        tileMap[0][i]->tiles[k][l].setPosition(globalPosX + k * 100, globalPosY + l * 100);
+                        tileMap[i][0]->tiles[k][l].setPosition(globalPosX + k * 100, globalPosY + l * 100);
                     }
                 }
             }
         }
-        //std::cout << "generated" << std::endl;
-
+        
     }
-    //up
-    /*else if (lastY > playerChunkY) {
-        int deleteChunkY = tileMap[0].size() - 1;
-        std::cout << deleteChunkY << "-" << RenderDistanceX << std::endl;
+    //down
+    else if (lastY < playerChunkY) {
+        int deleteChunkY = 0;
 
-        if (deleteChunkY >= 0) {
+        if (tileMap[0].size() > 0) {
             for (int i = 0; i < RenderDistanceX; ++i) {
                 if (tileMap[i][deleteChunkY] != nullptr) {
                     tileMap[i][deleteChunkY]->unloadChunk();
@@ -164,26 +195,29 @@ void Map::checkChunks(sf::Vector2f plPos) {
                 }
             }
 
+            for (int i = 0; i < RenderDistanceX; ++i) tileMap[i].push_back(nullptr);
+
             for (int i = 0; i < RenderDistanceX; ++i) {
                 int chunkX = playerChunkX + (i - halfRenderX);
-                int chunkY = playerChunkY - halfRenderY; 
+                int chunkY = playerChunkY + (RenderDistanceY / 2);
 
                 float globalPosX = chunkX * 400;
                 float globalPosY = chunkY * 400;
 
-                tileMap[i].insert(tileMap[i].begin(), new chunk(chunkX, chunkY));
-
+                tileMap[i].back() = new chunk(chunkX, chunkY);
 
                 for (int k = 0; k < 4; ++k) {
                     for (int l = 0; l < 4; ++l) {
-                        tileMap[i][deleteChunkY]->tiles[k][l].setPosition(globalPosX + k * 100, globalPosY + l * 100);
+                        tileMap[i].back()->tiles[k][l].setPosition(globalPosX + k * 100, globalPosY + l * 100);
                     }
                 }
             }
         }
-        
-    }*/
+
+    }
+
     
+
     lastX = playerChunkX;
     lastY = playerChunkY;
 }
