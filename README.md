@@ -1,7 +1,11 @@
-==============================================================================
-Licensed Materials - Property of TeamBlazeStudy
-(C) Copyright TeamBlazeStudy 2024. All Rights Reserved.
+<a name="TOP">Project2DGame</a>
+===================
 
-Unauthorized copying, modification, distribution, or use of this code
-is strictly prohibited.
-==============================================================================
+TeamBlazeStudy Game Engine
+Copyright (C) 2024 TeamBlazeStudy. All Rights Reserved.
+
+This software is licensed for use only in the game "TeamBlazeGame".<br>
+Unauthorized copying, distribution, or reverse engineering of this software
+is prohibited.
+
+===================
