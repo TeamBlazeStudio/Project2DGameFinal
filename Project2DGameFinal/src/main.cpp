@@ -26,6 +26,7 @@ int main(int argc, char** argv) {
         std::cerr << "Error Loading Player Assets" << std::endl;
         return EXIT_FAILURE;
     }
+    int damage = 0;
 
     const int mapWidth = 50;
     const int mapHeight = 50;
@@ -217,7 +218,9 @@ int main(int argc, char** argv) {
 
             gameMap->checkChunks(player->getPosition());
         
-            player->Update(dt);
+            player->Update(dt, damage);
+            //damage = 0;
+
             if (visual != NULL) visual->update(player->getPosition());
 
             game->window.setView(visual->getView());
@@ -236,7 +239,8 @@ int main(int argc, char** argv) {
             //add code here for enviroments...
 
             // ##### Draw UI #####
-            player->DrawLife(game->window);
+            game->window.setView(game->window.getDefaultView());
+            player->drawPlayerBars(game->window);
         }
 
 
