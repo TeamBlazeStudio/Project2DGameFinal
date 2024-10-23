@@ -13,6 +13,8 @@ Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, 
 	position.x = x;
 	position.y = y;
 
+	plLife.init(player.getPosition());
+
 }
 
 void Player::Update(float deltaTime) {
@@ -32,6 +34,7 @@ void Player::Update(float deltaTime) {
 	animation.Update(row, deltaTime, faceRight);
 	player.setTextureRect(animation.uvRect);
 	player.move(movement);
+	plLife.update(player.getPosition());
 }
 
 Player::~Player() {}

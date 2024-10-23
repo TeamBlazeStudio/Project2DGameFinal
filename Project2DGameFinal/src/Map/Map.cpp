@@ -68,7 +68,7 @@ void Map::checkChunks(sf::Vector2f plPos) {
     int playerChunkX = static_cast<int>(plPos.x / 400);
     int playerChunkY = static_cast<int>(std::floor(plPos.y / 400));
     const float activationDistance = 200.0f;
-    std::cout << playerChunkX << " - " << playerChunkY << std::endl;
+    //std::cout << playerChunkX << " - " << playerChunkY << std::endl;
 
 
     //right

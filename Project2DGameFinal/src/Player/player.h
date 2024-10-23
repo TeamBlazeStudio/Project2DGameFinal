@@ -3,17 +3,19 @@
 #include <vector>
 #include <SFML/Graphics.hpp>
 #include "../Animation/animation.h"
+#include "healt/healt.h"
 
 class Player {
 	sf::RectangleShape player;
 	sf::Vector2i position;
 
 	float speed = 120.f;
-	float healt = 100.f;
+	float lifePoints = 100.f;
 
 	unsigned int row;
 	bool faceRight;
 	Animation animation;
+	healt plLife;
 
 public:
 	Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, float x = 0, float y = 0);
@@ -28,11 +30,12 @@ public:
 	void Update(float deltaTime);
 
 	void Draw(sf::RenderWindow& window) { window.draw(player); }
-
+	void DrawLife(sf::RenderWindow& window) { plLife.Draw(window); }
 
 	const sf::Vector2f& getPosition() const { return player.getPosition(); }
 
 	sf::RectangleShape draw() { return player; }
+	
 
 	sf::Texture playertexture;
 };

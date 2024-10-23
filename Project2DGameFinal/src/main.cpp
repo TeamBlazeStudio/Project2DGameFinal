@@ -198,7 +198,7 @@ int main(int argc, char** argv) {
 
             if (generateSinglePlayer) {
                 //player
-                player = new Player(&plTexture, sf::Vector2u(5, 6), 0.3f, 1300, 600);
+                player = new Player(&plTexture, sf::Vector2u(5, 6), 0.3f, 1300, 700);
 
                 visual = new Camera(*game, player->getPosition().x, player->getPosition().y);
 
@@ -229,14 +229,14 @@ int main(int argc, char** argv) {
             // ##### Render Game Elements #####
             gameMap->draw(game->window);
             player->Draw(game->window);
+            
 
             // ##### Draw Enviroments #####
 
             //add code here for enviroments...
 
             // ##### Draw UI #####
-
-            //add code here for UI...
+            player->DrawLife(game->window);
         }
 
 
