@@ -15,8 +15,8 @@ chunk::chunk(int xpos, int ypos) : x(xpos), y(ypos) {
         }
     }
 
-    forlderPath = "../.game/world1";
-    saveToFile("../.game/world1");
+    forlderPath = "../.game/world1/chunks";
+    saveToFile("../.game/world1/chunks");
 }
 
 //load old chunks

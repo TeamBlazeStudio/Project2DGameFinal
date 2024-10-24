@@ -218,7 +218,7 @@ int main(int argc, char** argv) {
 
             gameMap->checkChunks(player->getPosition());
         
-            player->Update(dt, damage);
+            player->Update(dt, damage, game->window);
             //damage = 0;
 
             if (visual != NULL) visual->update(player->getPosition());

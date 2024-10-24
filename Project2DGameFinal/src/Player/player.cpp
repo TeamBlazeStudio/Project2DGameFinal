@@ -14,10 +14,9 @@ Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, 
 	position.y = y;
 
 	isAlive = true;
-
 }
 
-void Player::Update(float deltaTime, int val) {
+void Player::Update(float deltaTime, int val, sf::RenderWindow& window) {
 	if (isAlive = plLife.getIsAlive()) {
 		sf::Vector2f movement(0.0f, 0.0f);
 
@@ -25,6 +24,18 @@ void Player::Update(float deltaTime, int val) {
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) movement.x += speed * deltaTime;
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) { movement.y -= speed * deltaTime; row = 2; }
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) { movement.y += speed * deltaTime; row = 2; }
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::E) && !buttonLocked) {
+			(invBtn) ? invBtn = false : invBtn = true;
+			buttonLocked = true;
+			clock.restart();
+		}
+
+		if (buttonLocked) {
+			elapsedTime = clock.getElapsedTime();
+			if (elapsedTime >= lockDuration) {
+				buttonLocked = false;
+			}
+		}
 
 		if (movement.x == 0.0f && movement.y == 0.0f) row = 0;
 		else if (movement.x != 0.0f) {
@@ -34,7 +45,9 @@ void Player::Update(float deltaTime, int val) {
 		}
 		animation.Update(row, deltaTime, faceRight);
 		player.setTextureRect(animation.uvRect);
+		Inv.update(animation.uvRect, faceRight);
 		player.move(movement);
+		
 	}
 }
 
