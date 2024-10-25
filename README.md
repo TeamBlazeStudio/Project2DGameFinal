@@ -8,4 +8,3 @@ This software is licensed for use only in the game "TeamBlazeGame".<br>
 Unauthorized copying, distribution, or reverse engineering of this software
 is prohibited.
 
-===================
