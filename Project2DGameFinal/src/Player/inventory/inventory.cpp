@@ -18,7 +18,7 @@ inventory::inventory() {
 
 	miniPlayer.setTexture(&miniPlTexture);
 	miniPlayer.setSize(sf::Vector2f(150.f, 150.f));
-	miniPlayer.setPosition(710.f, 635.f);
+	miniPlayer.setPosition(700.f, 635.f);
 
 	
 	slotTex.loadFromFile("assets/items/null.png");
@@ -38,7 +38,7 @@ inventory::inventory() {
 void inventory::update(const sf::IntRect& animation,const bool& faceRight) {
 	miniPlayer.setTextureRect(animation);
 	if (!faceRight) miniPlayer.setPosition(690.f, 635.f);
-	else miniPlayer.setPosition(710.f, 635.f);
+	else miniPlayer.setPosition(705.f, 640.f);
 }
 
 inventory::~inventory() {}

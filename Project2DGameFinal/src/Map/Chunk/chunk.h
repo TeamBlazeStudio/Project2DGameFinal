@@ -5,6 +5,8 @@
 #include <fstream>
 #include <string>
 #include <iostream>
+#include <filesystem>
+
 
 class chunk {
 	static TextureManager txManager;
@@ -15,15 +17,15 @@ class chunk {
 	
 
 	std::string ID;
-	std::string forlderPath;
+	std::string folderPath;
 public:
 	sf::RectangleShape tiles[CHUNK_SIZE][CHUNK_SIZE];
 	
-	chunk(int xPos, int yPos);
+	chunk(int xPos, int yPos, const std::string& folderPath, bool choise);
 	chunk();
 	~chunk();
 
-	void saveToFile(const std::string& folderPath) const;
+	void saveToFile() const;
 	void loadFromFile();
 
 	void unloadChunk();

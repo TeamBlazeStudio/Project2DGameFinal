@@ -3,7 +3,7 @@
 TextureManager chunk::txManager;
 
 //create new chunks
-chunk::chunk(int xpos, int ypos) : x(xpos), y(ypos) {
+chunk::chunk(int xpos, int ypos, const std::string& folderPath, bool choise) : x(xpos), y(ypos), folderPath(folderPath) {
     for (int i = 0; i < CHUNK_SIZE; ++i) {
         for (int j = 0; j < CHUNK_SIZE; ++j) {
             tiles_type[i][j] = 1;
@@ -14,9 +14,9 @@ chunk::chunk(int xpos, int ypos) : x(xpos), y(ypos) {
             tiles[i][j].setPosition(i * 100.f, j * 100.f);
         }
     }
-
-    forlderPath = "../.game/world1/chunks";
-    saveToFile("../.game/world1/chunks");
+    
+    if (!choise) saveToFile();
+    else loadFromFile();
 }
 
 //load old chunks
@@ -24,24 +24,54 @@ chunk::chunk() {}
 
 chunk::~chunk() {}
 
-void chunk::saveToFile(const std::string& folderPath) const {
-	std::string fileName = folderPath + "/c" + std::to_string(x) + "_" + std::to_string(y) + ".txt";
-	std::ofstream file(fileName);
-    if (file.is_open()) {
-        for (int i = 0; i < CHUNK_SIZE; ++i) {
-            for (int j = 0; j < CHUNK_SIZE; ++j) {
-                file << tiles_type[i][j];
-                if (j < CHUNK_SIZE - 1) file << ",";
+
+void chunk::saveToFile() const {
+    
+    //load directory
+    if (std::filesystem::exists(folderPath) && std::filesystem::is_directory(folderPath)) {
+        std::string fileName = folderPath + "/c" + std::to_string(x) + "_" + std::to_string(y) + ".txt";
+        std::ofstream file(fileName);
+        if (file.is_open()) {
+            for (int i = 0; i < CHUNK_SIZE; ++i) {
+                for (int j = 0; j < CHUNK_SIZE; ++j) {
+                    file << tiles_type[i][j];
+                    if (j < CHUNK_SIZE - 1) file << ",";
+                }
+                file << "\n";
             }
-            file << "\n";
         }
+        else {
+            std::cerr << "error while trying to open the folderpath" << std::endl;
+            exit(EXIT_FAILURE);
+        }
+
+        file.close();
     }
-    else std::cerr << "error while trying to open the folderpath" << std::endl;
-	file.close();
+    //create a directory
+    else if (std::filesystem::create_directories(folderPath)) {
+        std::string fileName = folderPath + "/c" + std::to_string(x) + "_" + std::to_string(y) + ".txt";
+        std::ofstream file(fileName);
+        if (file.is_open()) {
+            for (int i = 0; i < CHUNK_SIZE; ++i) {
+                for (int j = 0; j < CHUNK_SIZE; ++j) {
+                    file << tiles_type[i][j];
+                    if (j < CHUNK_SIZE - 1) file << ",";
+                }
+                file << "\n";
+            }
+        }
+        else {
+            std::cerr << "error while trying to open the folderpath" << std::endl;
+            exit(EXIT_FAILURE);
+        }
+
+        file.close();
+    }
+    
 }
 
 void chunk::loadFromFile() {
-    std::string fileName = forlderPath + "/c" + std::to_string(x) + "_" + std::to_string(y) + ".txt";
+    std::string fileName = folderPath + "/c" + std::to_string(x) + "_" + std::to_string(y) + ".txt";
     std::ifstream file(fileName);
     if (file.is_open()) {
         std::string line;
@@ -57,7 +87,10 @@ void chunk::loadFromFile() {
             }
         }
     }
-    else std::cerr << "error: folderpath not found or file not found" << std::endl;
+    else {
+        std::cerr << "error: folderpath not found or file not found" << std::endl;
+        exit(EXIT_FAILURE);
+    }
     file.close();
 }
 

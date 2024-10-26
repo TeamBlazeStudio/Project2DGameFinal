@@ -19,11 +19,13 @@ class Map {
     int X_1 = 0;
     float gridSizeF;
 
+    std::string folderPath;
+
 public:
     Map(sf::Vector2u windowSize);
     ~Map();
 
-    void init(float gridSizeF, sf::Vector2f plPos);
+    void init(float gridSizeF, sf::Vector2f plPos, const std::string& path, bool choise);
     void checkChunks(sf::Vector2f plPos);
 
     //void unloadChunk();

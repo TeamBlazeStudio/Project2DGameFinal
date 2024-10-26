@@ -26,8 +26,9 @@ Map::Map(sf::Vector2u windowSize) {
 
 }
 
-void Map::init(float gridSizeF, sf::Vector2f plPos) {
+void Map::init(float gridSizeF, sf::Vector2f plPos, const std::string& path, bool choise) {
     this->gridSizeF = gridSizeF;
+    this->folderPath = path;
     int playerChunkX = static_cast<int>(plPos.x / 400);
     int playerChunkY = static_cast<int>(plPos.y / 400);
     lastX = playerChunkX;
@@ -44,24 +45,60 @@ void Map::init(float gridSizeF, sf::Vector2f plPos) {
         }
     }
 
-    //this code generate new chunks
-    for (int i = 0; i < RenderDistanceX; ++i) {
-        for (int j = 0; j < RenderDistanceY; ++j) {
-            int chunkX = playerChunkX + (i - halfRenderX);
-            int chunkY = playerChunkY + (j - halfRenderY);
 
-            if (tileMap[i][j] == nullptr) tileMap[i][j] = new chunk(chunkX, chunkY);
+    if (choise) {
+        //this code load chunks
+        for (int i = 0; i < RenderDistanceX; ++i) {
+            for (int j = 0; j < RenderDistanceY; ++j) {
+                int chunkX = playerChunkX + (i - halfRenderX);
+                int chunkY = playerChunkY + (j - halfRenderY);
 
-            float globalPosX = chunkX * 400;
-            float globalPosY = chunkY * 400;
+                if (tileMap[i][j] == nullptr) tileMap[i][j] = new chunk(chunkX, chunkY, folderPath, true);
+            
+                float globalPosX = chunkX * 400;
+                float globalPosY = chunkY * 400;
 
-            for (int k = 0; k < 4; ++k) {
-                for (int l = 0; l < 4; ++l) {
-                    tileMap[i][j]->tiles[k][l].setPosition(globalPosX + k * 100, globalPosY + l * 100);
+                for (int k = 0; k < 4; ++k) {
+                    for (int l = 0; l < 4; ++l) {
+                        tileMap[i][j]->tiles[k][l].setPosition(globalPosX + k * 100, globalPosY + l * 100);
+                    }
                 }
             }
         }
     }
+    else {
+        //this code generate new chunks
+        for (int i = 0; i < RenderDistanceX; ++i) {
+            for (int j = 0; j < RenderDistanceY; ++j) {
+                int chunkX = playerChunkX + (i - halfRenderX);
+                int chunkY = playerChunkY + (j - halfRenderY);
+
+                if (tileMap[i][j] == nullptr) tileMap[i][j] = new chunk(chunkX, chunkY, folderPath, false);
+
+                float globalPosX = chunkX * 400;
+                float globalPosY = chunkY * 400;
+
+                for (int k = 0; k < 4; ++k) {
+                    for (int l = 0; l < 4; ++l) {
+                        tileMap[i][j]->tiles[k][l].setPosition(globalPosX + k * 100, globalPosY + l * 100);
+                    }
+                }
+            }
+        }
+
+        std::string temp = path;
+        temp.erase(temp.size() - 6);
+        temp += "inventory";
+        if (std::filesystem::create_directories(temp));
+        else {
+            std::cerr << "error while trying to create inventory folder" << std::endl;
+            exit(EXIT_FAILURE);
+        }
+
+    }
+
+    
+
 }
 
 void Map::checkChunks(sf::Vector2f plPos) {
@@ -69,7 +106,7 @@ void Map::checkChunks(sf::Vector2f plPos) {
     int playerChunkY = static_cast<int>(std::floor(plPos.y / 400));
     const float activationDistance = 200.0f;
     //std::cout << playerChunkX << " - " << playerChunkY << std::endl;
-
+    //std::cout << folderPath << std::endl;
 
     //right
     if (lastX < playerChunkX) {
@@ -97,7 +134,11 @@ void Map::checkChunks(sf::Vector2f plPos) {
                 float globalPosX = chunkX * 400;
                 float globalPosY = chunkY * 400;
 
-                tileMap.back()[i] = new chunk(chunkX, chunkY);
+                std::string filePath = folderPath + "/c" + std::to_string(chunkX) + "_" + std::to_string(chunkY) + ".txt";
+
+                if (std::filesystem::exists(folderPath) && std::filesystem::is_regular_file(filePath)) 
+                    tileMap.back()[i] = new chunk(chunkX, chunkY, folderPath, true);
+                else tileMap.back()[i] = new chunk(chunkX, chunkY, folderPath, false);
 
                 for (int k = 0; k < 4; ++k) {
                     for (int l = 0; l < 4; ++l) {
@@ -106,7 +147,6 @@ void Map::checkChunks(sf::Vector2f plPos) {
                 }
             }
         }
-        //std::cout << "generated" << std::endl;
         
     }
     //left
@@ -134,7 +174,13 @@ void Map::checkChunks(sf::Vector2f plPos) {
             float globalPosX = chunkX * 400;
             float globalPosY = chunkY * 400;
 
-            tileMap.front()[i] = new chunk(chunkX, chunkY);
+            std::string filePath = folderPath + "/c" + std::to_string(chunkX) + "_" + std::to_string(chunkY) + ".txt";
+            
+            //std::cout << "X:" << std::to_string(chunkX) << "Y:" << std::to_string(chunkY) << " = " << filePath << std::endl;
+            
+            if (std::filesystem::exists(folderPath) && std::filesystem::is_regular_file(filePath))
+                tileMap.front()[i] = new chunk(chunkX, chunkY, folderPath, true);
+            else tileMap.front()[i] = new chunk(chunkX, chunkY, folderPath, false);
 
             for (int k = 0; k < 4; ++k) {
                 for (int l = 0; l < 4; ++l) {
@@ -170,7 +216,11 @@ void Map::checkChunks(sf::Vector2f plPos) {
                 float globalPosX = chunkX * 400;
                 float globalPosY = chunkY * 400;
 
-                tileMap[i][0] = new chunk(chunkX, chunkY);
+                std::string filePath = folderPath + "/c" + std::to_string(chunkX) + "_" + std::to_string(chunkY) + ".txt";
+
+                if (std::filesystem::exists(folderPath) && std::filesystem::is_regular_file(filePath))
+                    tileMap[i][0] = new chunk(chunkX, chunkY, folderPath, true);
+                else tileMap[i][0] = new chunk(chunkX, chunkY, folderPath, false);
 
                 for (int k = 0; k < 4; ++k) {
                     for (int l = 0; l < 4; ++l) {
@@ -204,7 +254,11 @@ void Map::checkChunks(sf::Vector2f plPos) {
                 float globalPosX = chunkX * 400;
                 float globalPosY = chunkY * 400;
 
-                tileMap[i].back() = new chunk(chunkX, chunkY);
+                std::string filePath = folderPath + "/c" + std::to_string(chunkX) + "_" + std::to_string(chunkY) + ".txt";
+
+                if (std::filesystem::exists(folderPath) && std::filesystem::is_regular_file(filePath))
+                    tileMap[i].back() = new chunk(chunkX, chunkY, folderPath, true);
+                else tileMap[i].back() = new chunk(chunkX, chunkY, folderPath, false);
 
                 for (int k = 0; k < 4; ++k) {
                     for (int l = 0; l < 4; ++l) {

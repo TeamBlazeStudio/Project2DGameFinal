@@ -18,6 +18,8 @@ int main(int argc, char** argv) {
     //Main Menu
     MainMenu mainMenu(game->window.getSize().x, game->window.getSize().y);
     SinglePlayerMenu singMenu(game->window.getSize().x, game->window.getSize().y);
+    NewWorldMenu newWorldMenu(game->window.getSize().x, game->window.getSize().y);
+    LoadWorldMenu loadWorldMenu(game->window.getSize().x, game->window.getSize().y);
 
     //Player
     Player* player = nullptr;
@@ -41,6 +43,11 @@ int main(int argc, char** argv) {
 
     bool generateSinglePlayer = true;
     bool start = false;
+    sf::Clock clock;
+    bool buttonLocked = false;
+    sf::Time lockDuration = sf::seconds(0.2f);
+    sf::Time elapsedTime;
+    std::string inputText;
 
     //Game Loop
     while (game->running()) {
@@ -53,14 +60,27 @@ int main(int argc, char** argv) {
                 game->end();
                 break;
             }
+            if (inputText.size() < 30 && game->evnt.type == sf::Event::TextEntered && newWorldMenu.GetNewWorldMenu()) {
+                if (game->evnt.text.unicode < 128 && game->evnt.text.unicode != 13 && game->evnt.text.unicode != '\b' && game->evnt.text.unicode != '\0')
+                    inputText += static_cast<char>(game->evnt.text.unicode);
+                else if (game->evnt.text.unicode == '\b') inputText.pop_back();
+                
+            }
+            
             if (game->evnt.type == sf::Event::KeyReleased) {
+                
+
                 if (game->evnt.key.code == sf::Keyboard::Down) {
                     if (singMenu.GetSingleplayerMenu()) singMenu.MoveDown();
+                    else if (newWorldMenu.GetNewWorldMenu()) newWorldMenu.MoveDown();
+                    else if (loadWorldMenu.GetLoadWorldMenu()) loadWorldMenu.MoveDown();
                     else mainMenu.MoveDown();
                     break;
                 }
                 if (game->evnt.key.code == sf::Keyboard::Up) {
                     if (singMenu.GetSingleplayerMenu()) singMenu.MoveUp();
+                    else if (newWorldMenu.GetNewWorldMenu()) newWorldMenu.MoveUp();
+                    else if (loadWorldMenu.GetLoadWorldMenu()) loadWorldMenu.MoveUp();
                     else mainMenu.MoveUp();
                     break;
                 }
@@ -125,12 +145,13 @@ int main(int argc, char** argv) {
                         //Create World
                         if (btnS == 0) {
                             singMenu.changeSingleMenu();
-                            mainMenu.changeSing();
+                            newWorldMenu.changeNewWorldMenu();
                         }
 
                         //Load World
                         else if (btnS == 1) {
-                            break;
+                            singMenu.changeSingleMenu();
+                            loadWorldMenu.changeLoadWorldMenu();
                         }
 
                         //Delete World
@@ -138,7 +159,51 @@ int main(int argc, char** argv) {
                             break;
                         }
                     }
+                    
+                    //Create World Menu
+                    else if (newWorldMenu.GetNewWorldMenu()) {
+                        int btnW = newWorldMenu.newWorldMenuPressed();
+
+                        if (btnW == 0 && !newWorldMenu.GetInputName() && !buttonLocked) {
+                            inputText.clear();
+                            newWorldMenu.changeInputName();
+                            buttonLocked = true;
+                            clock.restart();
+                        }
+                        
+                        //Create World
+                        else if (btnW == 2 && inputText.size() > 0) {
+                            mainMenu.changeSing();
+                            newWorldMenu.changeNewWorldMenu();
+                            if (newWorldMenu.GetInputName()) {
+                                newWorldMenu.changeInputName();
+                                //inputText = "";
+                            }
+                        }
+
+                    }
+
+                    //Load World Menu
+                    else if (loadWorldMenu.GetLoadWorldMenu()) {
+                        int btnL = loadWorldMenu.LoadWorldPressed();
+
+                        if (btnL > -1) {
+                            loadWorldMenu.changeLoadWorldMenu();
+                            mainMenu.changeSing();
+                            loadWorldMenu.setLoadMapCounter(btnL);
+                            loadWorldMenu.changeLoad();
+                        }
+                    }
+
+                    if (buttonLocked) {
+                        elapsedTime = clock.getElapsedTime();
+                        if (elapsedTime >= lockDuration) {
+                            buttonLocked = false;
+                        }
+                    }
                 }
+
+                //esc button
                 if (game->evnt.key.code == sf::Keyboard::Escape) {
                     //Main Menu
                     if (mainMenu.getMenu()) break;
@@ -146,6 +211,16 @@ int main(int argc, char** argv) {
                     else if (singMenu.GetSingleplayerMenu()) {
                         singMenu.changeSingleMenu();
                         mainMenu.changeMenu();
+                    }
+                    //New World menu -> singleplayer menu
+                    else if (newWorldMenu.GetNewWorldMenu()) {
+                        newWorldMenu.changeNewWorldMenu();
+                        singMenu.changeSingleMenu();
+                    }
+                    //Load World menu -> singleplayer menu
+                    else if (loadWorldMenu.GetLoadWorldMenu()) {
+                        loadWorldMenu.changeLoadWorldMenu();
+                        singMenu.changeSingleMenu();
                     }
                     //game -> main menu
                     else if (mainMenu.getSingleplayer()) {
@@ -193,19 +268,51 @@ int main(int argc, char** argv) {
             game->window.setView(view);
             singMenu.draw(game->window);
         }
+
+        //Create New World Menu
+        else if (newWorldMenu.GetNewWorldMenu()) {
+            game->clear();
+
+            if (newWorldMenu.GetInputName()) newWorldMenu.update(inputText, game->window);
+
+            sf::View view;
+            view.setSize(game->window.getSize().x, game->window.getSize().y);
+            view.setCenter(800, 500);
+            game->window.setView(view);
+            newWorldMenu.draw(game->window);
+        }
+
+        //Load New World Menu
+        else if (loadWorldMenu.GetLoadWorldMenu()) {
+            game->clear();
+
+            sf::View view;
+            view.setSize(game->window.getSize().x, game->window.getSize().y);
+            view.setCenter(800, 500);
+            game->window.setView(view);
+            loadWorldMenu.draw(game->window);
+        }
         
         //Singleplayer
         else if (mainMenu.getSingleplayer()) {
 
             if (generateSinglePlayer) {
                 //player
-                player = new Player(&plTexture, sf::Vector2u(5, 6), 0.3f, 1300, 700);
+                player = new Player(&plTexture, sf::Vector2u(5, 6), 0.2f, 1300, 700);
 
                 visual = new Camera(*game, player->getPosition().x, player->getPosition().y);
 
                 //Map
                 gameMap = new Map(game->window.getSize());
-                gameMap->init(100.f, player->getPosition());
+
+                if (!loadWorldMenu.getLoad()) gameMap->init(100.f, player->getPosition(), "../.game/" + inputText + "/chunks", false);
+                else {
+                    //std::cout << loadWorldMenu.getFolderName(loadWorldMenu.LoadWorldPressed()) << std::endl;
+                    gameMap->init(100.f, player->getPosition(), "../.game/" + loadWorldMenu.getFolderName(loadWorldMenu.LoadWorldPressed()) + "/chunks", true);
+                    loadWorldMenu.changeLoad();
+                }
+
+                inputText.clear();
 
                 generateSinglePlayer = false;
             }

@@ -23,7 +23,7 @@ void Player::Update(float deltaTime, int val, sf::RenderWindow& window) {
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) movement.x -= speed * deltaTime;
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) movement.x += speed * deltaTime;
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) { movement.y -= speed * deltaTime; row = 2; }
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) { movement.y += speed * deltaTime; row = 2; }
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) { movement.y += speed / 2 * deltaTime; row = 2; }
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::E) && !buttonLocked) {
 			(invBtn) ? invBtn = false : invBtn = true;
 			buttonLocked = true;
@@ -43,6 +43,11 @@ void Player::Update(float deltaTime, int val, sf::RenderWindow& window) {
 			if (movement.x > 0.0f) faceRight = true;
 			else faceRight = false;
 		}
+		else if (movement.y != 0.0f) {
+			if (movement.y > 0.0f) row = 3;
+			else row = 2;
+		}
+
 		animation.Update(row, deltaTime, faceRight);
 		player.setTextureRect(animation.uvRect);
 		Inv.update(animation.uvRect, faceRight);

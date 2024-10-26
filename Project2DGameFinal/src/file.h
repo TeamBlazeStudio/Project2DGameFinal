@@ -19,6 +19,8 @@
 #include "Camera/camera.h"
 #include "MainMenu/MainMenu.h"
 #include "MainMenu/SingleplayerMenu/SingleplayerMenu.h"
+#include "MainMenu/NewWorldMenu/NewWorldMenu.h"
+#include "MainMenu/LoadWorldMenu/LoadWorldMenu.h"
 
 
 // ##### Multiplayer #####
