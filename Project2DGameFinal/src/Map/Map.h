@@ -28,6 +28,20 @@ public:
     void init(float gridSizeF, sf::Vector2f plPos, const std::string& path, bool choise);
     void checkChunks(sf::Vector2f plPos);
 
+    sf::Vector2f getclosestTile(float x, float y, int ChunkX, int ChunkY) {
+        sf::Vector2f finalPos;
+        for (int i = 0; i < tileMap.size(); ++i) {
+            for (int j = 0; j < tileMap[i].size(); ++j) {
+                if (std::abs(tileMap[ChunkX][ChunkY]->tiles[i][j].getPosition().x - x) <= 50 &&
+                    std::abs(tileMap[ChunkX][ChunkY]->tiles[i][j].getPosition().y - y) <= 50) {
+                    finalPos.x = tileMap[ChunkX][ChunkY]->tiles[i][j].getPosition().x;
+                    finalPos.y = tileMap[ChunkX][ChunkY]->tiles[i][j].getPosition().y;
+                    return finalPos;
+                }
+            }
+        }
+    }
+
     //void unloadChunk();
     //void loadChunk();
 

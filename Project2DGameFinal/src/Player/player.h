@@ -8,6 +8,7 @@
 #include "mana/mana.h"
 #include "inventory/inventory.h"
 #include "hotbar/hotbar.h"
+#include "overlay/OverlayBlock.h"
 
 class Player {
 	sf::RectangleShape player;
@@ -33,6 +34,7 @@ class Player {
 	Mana plmana;
 	inventory Inv;
 	hotbar plHotbar;
+	OverlayBlock blockHover;
 
 public:
 	Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, float x = 0, float y = 0);
@@ -45,7 +47,7 @@ public:
 
 	void setTextureRect(sf::IntRect uvRect) { player.setTextureRect(uvRect); }
 	//need a function for remove and add life (i think i need to put it inside the update)
-	void Update(float deltaTime, int val, sf::RenderWindow& window);
+	void Update(float deltaTime, int val, sf::RenderWindow& window, float o_x, float o_y);
 
 	void Draw(sf::RenderWindow& window) { window.draw(player); }
 	void drawPlayerBars(sf::RenderWindow& window) {
@@ -55,7 +57,7 @@ public:
 		plHotbar.draw(window);
 		if (invBtn) Inv.draw(window);
 	}
-
+	void drawHover(sf::RenderWindow& window) { blockHover.draw(window); }
 	const sf::Vector2f& getPosition() const { return player.getPosition(); }
 
 	sf::RectangleShape draw() { return player; }

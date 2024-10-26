@@ -19,7 +19,6 @@ chunk::chunk(int xpos, int ypos, const std::string& folderPath, bool choise) : x
     else loadFromFile();
 }
 
-//load old chunks
 chunk::chunk() {}
 
 chunk::~chunk() {}

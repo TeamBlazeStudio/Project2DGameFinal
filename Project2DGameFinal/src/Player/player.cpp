@@ -16,7 +16,7 @@ Player::Player(sf::Texture* texture, sf::Vector2u imageCount, float switchTime, 
 	isAlive = true;
 }
 
-void Player::Update(float deltaTime, int val, sf::RenderWindow& window) {
+void Player::Update(float deltaTime, int val, sf::RenderWindow& window, float o_x, float o_y) {
 	if (isAlive = plLife.getIsAlive()) {
 		sf::Vector2f movement(0.0f, 0.0f);
 
@@ -52,7 +52,7 @@ void Player::Update(float deltaTime, int val, sf::RenderWindow& window) {
 		player.setTextureRect(animation.uvRect);
 		Inv.update(animation.uvRect, faceRight);
 		player.move(movement);
-		
+		blockHover.update(o_x, o_y);
 	}
 }
 

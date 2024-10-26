@@ -37,7 +37,6 @@ void Map::init(float gridSizeF, sf::Vector2f plPos, const std::string& path, boo
     halfRenderX = RenderDistanceX / 2;
     halfRenderY = RenderDistanceY / 2;
 
-    //need to add a function for load a chunk already generated
     if (tileMap.empty()) {
         tileMap.resize(RenderDistanceX);
         for (int i = 0; i < RenderDistanceX; ++i) {
@@ -60,7 +59,7 @@ void Map::init(float gridSizeF, sf::Vector2f plPos, const std::string& path, boo
 
                 for (int k = 0; k < 4; ++k) {
                     for (int l = 0; l < 4; ++l) {
-                        tileMap[i][j]->tiles[k][l].setPosition(globalPosX + k * 100, globalPosY + l * 100);
+                        tileMap[i][j]->tiles[k][l].setPosition(globalPosX + k * 100 - 100, globalPosY + l * 100 + 100);
                     }
                 }
             }
@@ -80,7 +79,7 @@ void Map::init(float gridSizeF, sf::Vector2f plPos, const std::string& path, boo
 
                 for (int k = 0; k < 4; ++k) {
                     for (int l = 0; l < 4; ++l) {
-                        tileMap[i][j]->tiles[k][l].setPosition(globalPosX + k * 100, globalPosY + l * 100);
+                        tileMap[i][j]->tiles[k][l].setPosition(globalPosX + k * 100 - 100, globalPosY + l * 100 + 100);
                     }
                 }
             }
@@ -105,7 +104,7 @@ void Map::checkChunks(sf::Vector2f plPos) {
     int playerChunkX = static_cast<int>(plPos.x / 400);
     int playerChunkY = static_cast<int>(std::floor(plPos.y / 400));
     const float activationDistance = 200.0f;
-    //std::cout << playerChunkX << " - " << playerChunkY << std::endl;
+    std::cout << playerChunkX << " - " << playerChunkY << std::endl;
     //std::cout << folderPath << std::endl;
 
     //right
@@ -142,7 +141,7 @@ void Map::checkChunks(sf::Vector2f plPos) {
 
                 for (int k = 0; k < 4; ++k) {
                     for (int l = 0; l < 4; ++l) {
-                        tileMap.back()[i]->tiles[k][l].setPosition(globalPosX + k * 100, globalPosY + l * 100);
+                        tileMap.back()[i]->tiles[k][l].setPosition(globalPosX + k * 100 - 100, globalPosY + l * 100 + 100);
                     }
                 }
             }
@@ -184,7 +183,7 @@ void Map::checkChunks(sf::Vector2f plPos) {
 
             for (int k = 0; k < 4; ++k) {
                 for (int l = 0; l < 4; ++l) {
-                    tileMap.front()[i]->tiles[k][l].setPosition(globalPosX + k * 100, globalPosY + l * 100);
+                    tileMap.front()[i]->tiles[k][l].setPosition(globalPosX + k * 100 - 100, globalPosY + l * 100 + 100);
                 }
             }
         }
@@ -224,7 +223,7 @@ void Map::checkChunks(sf::Vector2f plPos) {
 
                 for (int k = 0; k < 4; ++k) {
                     for (int l = 0; l < 4; ++l) {
-                        tileMap[i][0]->tiles[k][l].setPosition(globalPosX + k * 100, globalPosY + l * 100);
+                        tileMap[i][0]->tiles[k][l].setPosition(globalPosX + k * 100 - 100, globalPosY + l * 100 + 100);
                     }
                 }
             }
@@ -262,7 +261,7 @@ void Map::checkChunks(sf::Vector2f plPos) {
 
                 for (int k = 0; k < 4; ++k) {
                     for (int l = 0; l < 4; ++l) {
-                        tileMap[i].back()->tiles[k][l].setPosition(globalPosX + k * 100, globalPosY + l * 100);
+                        tileMap[i].back()->tiles[k][l].setPosition(globalPosX + k * 100 - 100, globalPosY + l * 100 + 100);
                     }
                 }
             }

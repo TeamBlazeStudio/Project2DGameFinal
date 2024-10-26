@@ -30,10 +30,6 @@ int main(int argc, char** argv) {
     }
     int damage = 0;
 
-    const int mapWidth = 50;
-    const int mapHeight = 50;
-    const int tileSize = 32;
-
     //Map
     Map* gameMap = nullptr;
 
@@ -48,12 +44,22 @@ int main(int argc, char** argv) {
     sf::Time lockDuration = sf::seconds(0.2f);
     sf::Time elapsedTime;
     std::string inputText;
+    int tileX, tileY;
 
     //Game Loop
     while (game->running()) {
         dt = dtClock.restart().asSeconds();
         float fps = 1.f / dt;
         lastTime = dt;
+
+        if (mainMenu.getSingleplayer()) {
+            sf::Vector2i mousePosWindow = sf::Mouse::getPosition(game->window);
+
+            // Converti le coordinate del mouse alle coordinate del mondo (mappa) usando la vista corrente
+            sf::Vector2f mousePosWorld = game->window.mapPixelToCoords(mousePosWindow, visual->getView());
+            tileX = static_cast<int>(mousePosWorld.x / 100) * 100;
+            tileY = static_cast<int>(mousePosWorld.y / 100) * 100;
+        }
 
         while (game->window.pollEvent(game->evnt)) {
             if (game->evnt.type == sf::Event::Closed) {
@@ -324,8 +330,10 @@ int main(int argc, char** argv) {
             else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) player->MoveYpos(dt);
 
             gameMap->checkChunks(player->getPosition());
-        
-            player->Update(dt, damage, game->window);
+            /*sf::Vector2f tilePos = gameMap->getclosestTile(gridX, gridY, chunkX, chunkY);
+            gridX = tilePos.x;
+            gridY = tilePos.y;*/
+            player->Update(dt, damage, game->window, static_cast<float>(tileX), static_cast<float>(tileY));
             //damage = 0;
 
             if (visual != NULL) visual->update(player->getPosition());
@@ -339,6 +347,7 @@ int main(int argc, char** argv) {
             // ##### Render Game Elements #####
             gameMap->draw(game->window);
             player->Draw(game->window);
+            player->drawHover(game->window);
             
 
             // ##### Draw Enviroments #####
