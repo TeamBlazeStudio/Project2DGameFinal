@@ -44,7 +44,9 @@ int main(int argc, char** argv) {
     sf::Time lockDuration = sf::seconds(0.2f);
     sf::Time elapsedTime;
     std::string inputText;
-    int tileX, tileY;
+    int tileX = 0, tileY = 0;
+    int tileX2 = 0, tileY2 = 0;
+    int chunkX = 0, chunkY = 0;
 
     //Game Loop
     while (game->running()) {
@@ -55,10 +57,17 @@ int main(int argc, char** argv) {
         if (mainMenu.getSingleplayer()) {
             sf::Vector2i mousePosWindow = sf::Mouse::getPosition(game->window);
 
-            // Converti le coordinate del mouse alle coordinate del mondo (mappa) usando la vista corrente
-            sf::Vector2f mousePosWorld = game->window.mapPixelToCoords(mousePosWindow, visual->getView());
-            tileX = static_cast<int>(mousePosWorld.x / 100) * 100;
-            tileY = static_cast<int>(mousePosWorld.y / 100) * 100;
+            sf::Vector2f mousePosWorld = game->window.mapPixelToCoords(mousePosWindow);
+            sf::Vector2f mousePosWorld2 = game->window.mapPixelToCoords(mousePosWindow, visual->getView());
+            
+            chunkX = static_cast<int>(mousePosWorld.x) / 400;
+            chunkY = static_cast<int>(mousePosWorld.y) / 400;
+            
+            tileX2 = static_cast<int>(mousePosWorld2.x / 100) * 100;
+            tileY2 = static_cast<int>(mousePosWorld2.y / 100) * 100;
+
+            tileX = (static_cast<int>(mousePosWorld.x) % 400) / 100;
+            tileY = (static_cast<int>(mousePosWorld.y) % 400) / 100;
         }
 
         while (game->window.pollEvent(game->evnt)) {
@@ -329,11 +338,15 @@ int main(int argc, char** argv) {
             else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) player->Moveyneg(dt);
             else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) player->MoveYpos(dt);
 
+            bool placeBlock = false;
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) placeBlock = true;
+
             gameMap->checkChunks(player->getPosition());
-            /*sf::Vector2f tilePos = gameMap->getclosestTile(gridX, gridY, chunkX, chunkY);
-            gridX = tilePos.x;
-            gridY = tilePos.y;*/
-            player->Update(dt, damage, game->window, static_cast<float>(tileX), static_cast<float>(tileY));
+
+            std::cout << chunkX << " - " << chunkY << " Tile: " << tileX << " - " << tileY << std::endl;
+            player->Update(dt, damage, game->window, static_cast<float>(tileX2), static_cast<float>(tileY2));
+            if (placeBlock) gameMap->placeBlock(chunkX, chunkY, tileX, tileY);
+            
             //damage = 0;
 
             if (visual != NULL) visual->update(player->getPosition());

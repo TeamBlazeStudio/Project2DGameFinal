@@ -6,7 +6,10 @@ TextureManager chunk::txManager;
 chunk::chunk(int xpos, int ypos, const std::string& folderPath, bool choise) : x(xpos), y(ypos), folderPath(folderPath) {
     for (int i = 0; i < CHUNK_SIZE; ++i) {
         for (int j = 0; j < CHUNK_SIZE; ++j) {
-            tiles_type[i][j] = 1;
+
+            int randNum = (rand() % 3) + 1;
+            tiles_type[i][j] = randNum;
+
             tiles[i][j].setSize(sf::Vector2f(100.f, 100.f));
             tiles[i][j].setOutlineColor(sf::Color::Green);
             tiles[i][j].setOutlineThickness(2.f);
@@ -112,5 +115,7 @@ void chunk::draw(sf::RenderWindow& window) {
 
 sf::Texture& chunk::textureCase(int i) {
     if (i == 1) return txManager.getTexture("assets/block/grass_block.png");
-    else if (i == 2) return txManager.getTexture("assets/block/sand.png");
+    else if (i == 2) return txManager.getTexture("assets/block/grass_block2.png");
+    else if (i == 3) return txManager.getTexture("assets/block/grass_block3.png");
+    else if (i == 4) return txManager.getTexture("assets/block/sand.png");
 }
