@@ -30,7 +30,6 @@ public:
 
     void placeBlock(int chunkX, int chunkY, int tileX, int tileY) {
         if (tileMap[chunkX][chunkY] != nullptr) {
-            // Assicurati che `tileX` e `tileY` siano dentro i limiti
             if (tileX >= 0 && tileX < 4 && tileY >= 0 && tileY < 4) {
                 tileMap[chunkX][chunkY]->tiles[tileX][tileY].setTexture(NULL);
             }

@@ -21,6 +21,7 @@
 #include "MainMenu/SingleplayerMenu/SingleplayerMenu.h"
 #include "MainMenu/NewWorldMenu/NewWorldMenu.h"
 #include "MainMenu/LoadWorldMenu/LoadWorldMenu.h"
+#include "Entity/Zombie/Zombie.h"
 
 
 // ##### Multiplayer #####

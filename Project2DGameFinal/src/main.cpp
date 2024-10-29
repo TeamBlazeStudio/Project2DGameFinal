@@ -23,12 +23,19 @@ int main(int argc, char** argv) {
 
     //Player
     Player* player = nullptr;
-    sf::Texture plTexture;
+    sf::Texture plTexture, zombieTx;
     if (!plTexture.loadFromFile("assets/player/Player.png")) {
         std::cerr << "Error Loading Player Assets" << std::endl;
         return EXIT_FAILURE;
     }
     int damage = 0;
+
+    //Mob
+    Zombie* zombie = nullptr;
+    if (!zombieTx.loadFromFile("assets/mob/Skeleton.png")) {
+        std::cerr << "Error Loading Skeleton Assets" << std::endl;
+        return EXIT_FAILURE;
+    }
 
     //Map
     Map* gameMap = nullptr;
@@ -314,6 +321,7 @@ int main(int argc, char** argv) {
             if (generateSinglePlayer) {
                 //player
                 player = new Player(&plTexture, sf::Vector2u(5, 6), 0.2f, 1300, 700);
+                zombie = new Zombie(&plTexture, sf::Vector2u(5, 6), 0.2f, 950, 700);
 
                 visual = new Camera(*game, player->getPosition().x, player->getPosition().y);
 
@@ -343,9 +351,10 @@ int main(int argc, char** argv) {
 
             gameMap->checkChunks(player->getPosition());
 
-            std::cout << chunkX << " - " << chunkY << " Tile: " << tileX << " - " << tileY << std::endl;
+            //std::cout << chunkX << " - " << chunkY << " Tile: " << tileX << " - " << tileY << std::endl;
             player->Update(dt, damage, game->window, static_cast<float>(tileX2), static_cast<float>(tileY2));
             if (placeBlock) gameMap->placeBlock(chunkX, chunkY, tileX, tileY);
+            zombie->Update(player->getPosition(), dt);
             
             //damage = 0;
 
@@ -360,6 +369,7 @@ int main(int argc, char** argv) {
             // ##### Render Game Elements #####
             gameMap->draw(game->window);
             player->Draw(game->window);
+            zombie->draw(game->window);
             player->drawHover(game->window);
             
 
