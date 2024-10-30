@@ -32,8 +32,8 @@ int main(int argc, char** argv) {
 
     //Mob
     Zombie* zombie = nullptr;
-    if (!zombieTx.loadFromFile("assets/mob/Skeleton.png")) {
-        std::cerr << "Error Loading Skeleton Assets" << std::endl;
+    if (!zombieTx.loadFromFile("assets/mob/zombie.png")) {
+        std::cerr << "Error Loading Zombie Assets" << std::endl;
         return EXIT_FAILURE;
     }
 
@@ -321,7 +321,7 @@ int main(int argc, char** argv) {
             if (generateSinglePlayer) {
                 //player
                 player = new Player(&plTexture, sf::Vector2u(5, 6), 0.2f, 1300, 700);
-                zombie = new Zombie(&plTexture, sf::Vector2u(5, 6), 0.2f, 950, 700);
+                zombie = new Zombie(&zombieTx, sf::Vector2u(5, 6), 0.2f, 950, 700);
 
                 visual = new Camera(*game, player->getPosition().x, player->getPosition().y);
 
